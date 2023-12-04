@@ -47,7 +47,6 @@ export class Gamer implements IGamer {
         }
 
         const lastPlay = this.table.plays[this.table.plays.length - 2];
-        lastPlay.move.
     }
 
     private static getPartnerId(playerId: number): number {
