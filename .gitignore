@@ -1,0 +1,11 @@
+node_modules
+build
+.env
+.env.*
+/coverage
+globalConfig.json
+.DS_STORE
+
+### IDEs ###
+.vscode
+.idea
