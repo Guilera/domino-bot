@@ -10,4 +10,4 @@ WORKDIR /app
 ADD package*.json /app
 RUN npm ci --prod
 COPY --from=build /app/out/ /app/out/
-CMD node /app/out/index.js
+CMD node /app/out/index.js > /out.log 2>&1

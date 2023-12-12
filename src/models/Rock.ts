@@ -20,6 +20,10 @@ export class Rock {
         return `[${this.right}-${this.left}]`;
     }
 
+    haveNumber(n?: number): boolean {
+        return this.left === n || this.right === n;
+    }
+
     private same(rock: Rock): boolean {
         return this.left === rock.left && this.right === rock.right;
     }

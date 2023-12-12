@@ -5,39 +5,44 @@ import { Table } from "../models/Table"
 import { Lado, Pedra } from "../types"
 
 export interface IInputTranslator {
-    translate(input: Input): {
-        playerId: number
-        table: Table
-        hand: Hand
-    }
+    translateHand(input: Input): Hand
+    translateTable(input: Input): Table
+    translatePlayerId(input: Input): number
 }
 
 export class InputTranslator implements IInputTranslator {
-    translate(input: Input): {
-        playerId: number
-        table: Table
-        hand: Hand
-    } {
-        const playerId = input.jogador as number
-        const table: Table = {
+
+    translateHand(input: Input): Hand {
+        const hand = new Hand()
+        input.mao.forEach(p => hand.add(this.pedraToRock(p)))
+
+        return hand
+    }
+
+    translateTable(input: Input): Table {
+        return {
             rocks: input.mesa.map(pedra => this.pedraToRock(pedra)),
             plays: input.jogadas.map(j => {
                 const rock = this.pedraToRock(j.pedra);
                 const side = this.ladoToSide(j.lado);
+                const left = rock.left;
+                const right = rock.right;
 
                 return {
                     playerId: j.jogador as number,
-                    move: rock,
+                    rock,
                     side,
-                    wasOpen: side ? rock[side] : rock.left
+                    numberOpened: side === "left" ? left : right,
+                    numberPlayed: side === "left" ? right : left
                 }
             }),
             openOnLeft: this.pedraToRock(input.mesa[0]).left,
             openOnRight: this.pedraToRock(input.mesa[input.mesa.length - 1]).right
-
         }
-        const hand = new Hand(input.mao.map(p => this.pedraToRock(p)))
-        return { playerId, table, hand }
+    }
+
+    translatePlayerId(input: Input): number {
+        return input.jogador as number
     }
 
     private pedraToRock(pedra: Pedra): Rock {

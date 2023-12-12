@@ -1,8 +1,9 @@
 import { Rock } from "./Rock"
 
-export interface Play {
+export interface PlayLog {
     playerId: number
-    move: Rock
+    rock: Rock
     side?: "left" | "right"
-    wasOpen: number
+    numberPlayed: number
+    numberOpened: number
 }

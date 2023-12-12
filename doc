@@ -1,0 +1,19 @@
+descobrir quem ta na frente
+
+se eu for o primeiro
+    - abrir a ponta
+    - jogar o que tem mais
+
+se 2
+    - abrir a ponta
+    - jogar o que tem mais
+
+se 3
+    - abrir o numero que o parceiro mais jogou
+
+se 4
+    - forçar passe do 1
+        - jogar o que ele não tem
+        - jogar a pedra que tem em maior quantidade na mesa + minha mão
+        - jogar o numero que ele ainda não jogou
+        - jogar o numero que ele jogou menos

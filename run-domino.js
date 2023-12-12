@@ -15,6 +15,9 @@ function run(command, args, options) {
 
   if (result.status !== 0 || result.signal) {
     console.error("Failed.");
+    console.error(`Command: ${command} ${args.join(" ")}`);
+    console.error(`Status: ${result.status}`);
+    // console.error(`Signal: ${JSON.stringify(result, null, 2)}`);
     process.exit(1);
   }
 
@@ -129,10 +132,24 @@ jogadores[2].port = 5552;
 jogadores[3].port = 5553;
 jogadores[4].port = 5554;
 
+const dirname = __dirname.replace(/\\/g, "/");
+
+console.log(`DIRNAME`, dirname);
+
+const runningContainers = run("docker", ["ps", "--format", "'{{.ID}}'"]).stdout.toString().trim()
+  .match(/'(.*)'/g)
+  .map(element => element.replace(/'/g, ""));
+
+console.log(`Encontrado containers antigos: ${runningContainers}`)
+runningContainers.forEach(container => {
+  console.log(`Parando container ${container}...`);
+  run("docker", ["stop", "-t", "0", "-s", "9", container]);
+})
+
 for (let i = 1; i <= 4; ++i) {
   console.log(`Iniciando container do jogador ${i}... ${jogadores[i].path}`);
 
-  const id = run("docker", ["run", "--rm", "-d", "--memory=1g", "--memory-swap=1g", "--cpus=1", "-p", `${jogadores[i].port}:8000`, jogadores[i].image]).stdout.toString().trim();
+  const id = run("docker", ["run", "--rm", "-d", "--memory=1g", "--memory-swap=1g", "--cpus=1", "-v", `./:${dirname}`, "-p", `${jogadores[i].port}:8000`, jogadores[i].image]).stdout.toString().trim();
 
   jogadores[i].containerId = id;
 }
@@ -147,7 +164,7 @@ function shutdown() {
   }
 }
 
-process.on("exit", shutdown);
+// process.on("exit", shutdown);
 process.on("uncaughtException", err => { shutdown(); console.error(err); process.exit(1); });
 
 console.log(options.games === 1 ? "Iniciando partida..." : "Iniciando campeonato...")
